@@ -3,10 +3,7 @@ const config = require('./../config.json')
 module.exports = class util {
 
     static isHerePresent(message) {
-        if (message.indexOf("@here") !== -1) {
-            return true
-        }
-        return false
+        return message.indexOf("@here") !== -1
     }
 
     static isMessageAlreadyPosted(message) {
