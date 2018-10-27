@@ -9,7 +9,7 @@ For example, you can :
 - Take messages from differents discord server and send them to a unique discord channel
 - Create a collaboration system : let's say you have discord 1, 2 3 and each of this discord have a channel created for the collaboration. Each discord will receive the message from the others discord (or you can say, if you are discord 2, I want to receive the message from 1 but not from 3.)
 
-# Instal
+# Install
 Create at the root of the project a config.json file, based on config.exemple.json (copy paste it) and fill it with your telegram/discord bots, etc. If you don't do this, the app won't work.
 
 Then, go to the root folder of the project in a terminal
