@@ -1,5 +1,5 @@
 // Dependancies
-import Discord from 'discord.js';
+import Discord, { GuildChannel, Message, Channel, TextChannel } from 'discord.js';
 const TelegramBot = require('node-telegram-bot-api');
 import config from './config.json';
 import { configStruct } from "./type.js";
@@ -32,13 +32,13 @@ discords.forEach(discord => {
 discordBot.login(config.discordToken);
 
 //For every message on the discord
-discordBot.on('message', function (message: any) {
+discordBot.on('message', (message:  Message) =>  {
 
     //For every Discords
     let discords = config.discords;
     discords.forEach(element => {
-
-        if (message.channel.name === element.channelId) {
+        let chan = message.channel as TextChannel
+        if (chan.name === element.channelId) {
 
             //Is the message coming from the bot ?
             if (!util.isMessageAlreadyPosted(message.content)) {
@@ -67,10 +67,7 @@ discordBot.on('message', function (message: any) {
                         let neighbords = discord.neighboards_name;
                         neighbords.forEach(neihboard => {
                             if (neihboard === element.name) {
-
-                                const channel = discordBot.channels.get(discord.channelId)
-                            
-
+                                const channel = discordBot.channels.get(discord.channelId)! as TextChannel;
                                 channel.send(element.name + " : " + message.content)
                             }
                         })
