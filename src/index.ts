@@ -1,9 +1,11 @@
 // Dependancies
-const Discord = require('discord.js');
+import Discord from 'discord.js';
 const TelegramBot = require('node-telegram-bot-api');
-const config = require('./config.json')
-const moment = require('moment')
-const util = require('./util/index')
+import config from './config.json';
+import { configStruct } from "./type.js";
+import moment, { Moment }  from 'moment';
+import { util } from "./util/index.js";
+
 moment().format();
 
 //TODO Follow message on channel that we are interested by, not all of them
@@ -13,13 +15,16 @@ const discordBot = new Discord.Client;
 const telegramBot = new TelegramBot(config.telegramToken);
 
 
-const discords = config.discords;
+let dates: { [date: string]: Moment } = {};
 
-let dates = {};
+let configWithStruct : configStruct = config;
+
+let discords = configWithStruct.discords;
+
 //For every Discords with here activated, we add a date elemnt
-discords.forEach(element => {
-    if (element.here) {
-        dates[element.channel] = moment().subtract(7, 'days')
+discords.forEach(discord => {
+    if (discord.here) {
+        dates[discord.channelId] = moment().subtract(7, 'days')
     }
 });
 
@@ -27,22 +32,22 @@ discords.forEach(element => {
 discordBot.login(config.discordToken);
 
 //For every message on the discord
-discordBot.on('message', function (message) {
+discordBot.on('message', function (message: any) {
 
     //For every Discords
     let discords = config.discords;
     discords.forEach(element => {
 
-        if (message.channel.name === element.channel) {
+        if (message.channel.name === element.channelId) {
 
-            //Is the message coming from the bot ? 
+            //Is the message coming from the bot ?
             if (!util.isMessageAlreadyPosted(message.content)) {
 
-                telegramBot.sendMessage(config.telegramChatID, element.Name + ": " + message.content);
+                telegramBot.sendMessage(config.telegramChatID, element.name + ": " + message.content);
 
                 if (element.here) {
-                    //Is any here have already send in the last config.delayHereControl minutes ? 
-                    let testDate = moment(dates[element.channel]);
+                    //Is any here have already send in the last config.delayHereControl minutes ?
+                    let testDate = moment(dates[element.channelId]);
                     if (testDate.add(config.delayHereControl, 'minutes').isBefore(moment())) {
 
                         //Let's check if there is no already a @here in the message
@@ -52,18 +57,21 @@ discordBot.on('message', function (message) {
                             message.channel.send("@here : Nouveau 100 détecté !");
                         }
                         //Let's save the date
-                        dates[element.channel] = moment();
+                        dates[element.channelId] = moment();
                     }
                 }
 
                 //We are going to sent this message to all the neighbords that have asked for it.
                 discords.forEach(discord => {
-                    if (discord.neighbords) {
+                    if (discord.neighboards) {
                         let neighbords = discord.neighboards_name;
                         neighbords.forEach(neihboard => {
-                            if (neihboard === element.Name) {
-                                const channel = discordBot.channels.find('name', discord.channel)
-                                channel.send(element.Name + " : " + message.content)
+                            if (neihboard === element.name) {
+
+                                const channel = discordBot.channels.get(discord.channelId)
+                            
+
+                                channel.send(element.name + " : " + message.content)
                             }
                         })
                     }

@@ -4,7 +4,8 @@
   "description": "Simple app that take messages from a Discord Server and send them to a Telegram channel/group",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/index.js\"",
+    "start": "tsc && node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,11 @@
     "discord.js": "^11.4.2",
     "moment": "^2.22.2",
     "node-telegram-bot-api": "^0.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.1",
+    "concurrently": "^4.0.1",
+    "nodemon": "^1.18.5",
+    "typescript": "^3.1.4"
   }
 }
