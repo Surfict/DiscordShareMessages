@@ -68,3 +68,6 @@ typings/
 
 # config
 config.json
+
+# Dist (output from TS)
+/dist
