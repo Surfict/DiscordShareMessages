@@ -17,7 +17,7 @@ export class util {
 
     for (let i = 0; i < discords.length; i++) {
       const discord = discords[i];
-      if (message.indexOf(discord.name + " : ") !== -1) {
+      if (message.indexOf(discord.name + ", ") !== -1) {
         return true;
       }
     }
@@ -58,7 +58,7 @@ export class util {
 
   static async checkTelegramBot(telegramBot: any) {
     try {
-      await telegramBot.sendMessage(config.telegramChatID, "Le scanner des 4 vient d'être lancé :)");
+      await telegramBot.sendMessage(config.telegramChatID, "Le scanner des 4 vient d'être lancé :)\nNous avons actuellement " + config.discords.length + " discords en collaboration !");
     }
     catch (error) {
       console.error("Telegram bot didn't start. Please verify your tokenBot Id or your chat id in the config file. Message error : " + error)
