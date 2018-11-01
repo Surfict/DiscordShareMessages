@@ -1,9 +1,9 @@
 {
     "discordToken": "efekfjekjfkejfkejf",
     "discords" : [
-        {"name" : "Discord du 14", "here": true, "neighboard" : "false", "neighboards_name" : [""], "channel" : "💯alertes-iv-100"},
-        {"name" : "Discord du 15", "here": true, "neighboard" : "true", "neighboards_name" : ["Discord du 14", "Discord du 16"], "channel" : "100pogo2"},
-        {"name" : "Discord du 16", "here": false, "neighboard" : "true", "neighboards_name" : ["Discord du 14"], "channel" : "100pogo3"}
+        {"name" : "Discord du 14", "here": true, "neighboards" : "false", "neighboards_name" : [""], "channelId" : "💯alertes-iv-100"},
+        {"name" : "Discord du 15", "here": true, "neighboards" : "true", "neighboards_name" : ["Discord du 14", "Discord du 16"], "channelId" : "100pogo2"},
+        {"name" : "Discord du 16", "here": false, "neighboards" : "true", "neighboards_name" : ["Discord du 14"], "channelId" : "100pogo3"}
     ],
     "telegramToken" : "4slkslskflkslfksf",
     "telegramChatID" : "-1009894849",

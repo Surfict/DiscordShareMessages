@@ -3,7 +3,7 @@ import Discord, { GuildChannel, Message, Channel, TextChannel } from 'discord.js
 const TelegramBot = require('node-telegram-bot-api');
 import config from './config.json';
 import { configStruct } from "./type.js";
-import moment, { Moment }  from 'moment';
+import moment, { Moment } from 'moment';
 import { util } from "./util/index.js";
 
 moment().format();
@@ -15,11 +15,13 @@ const discordBot = new Discord.Client;
 const telegramBot = new TelegramBot(config.telegramToken);
 
 
+//Var init
 let dates: { [date: string]: Moment } = {};
-
-let configWithStruct : configStruct = config;
-
+let configWithStruct: configStruct = config;
 let discords = configWithStruct.discords;
+
+//Is the config well ?
+
 
 //For every Discords with here activated, we add a date elemnt
 discords.forEach(discord => {
@@ -32,13 +34,13 @@ discords.forEach(discord => {
 discordBot.login(config.discordToken);
 
 //For every message on the discord
-discordBot.on('message', (message:  Message) =>  {
+discordBot.on('message', (message: Message) => {
 
     //For every Discords
     let discords = config.discords;
     discords.forEach(element => {
-        let chan = message.channel as TextChannel
-        if (chan.name === element.channelId) {
+
+        if (message.channel.id === element.channelId) {
 
             //Is the message coming from the bot ?
             if (!util.isMessageAlreadyPosted(message.content)) {
@@ -68,7 +70,9 @@ discordBot.on('message', (message:  Message) =>  {
                         neighbords.forEach(neihboard => {
                             if (neihboard === element.name) {
                                 const channel = discordBot.channels.get(discord.channelId)! as TextChannel;
-                                channel.send(element.name + " : " + message.content)
+                                if (channel !== undefined) {
+                                    channel.send(element.name + " : " + message.content)
+                                }
                             }
                         })
                     }

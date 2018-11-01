@@ -1,6 +1,7 @@
-const config = require("./../config.json");
+import config from './../config.json';
 
 export class util {
+
   static isHerePresent(message: string) {
     return message.indexOf("@here") !== -1;
   }
@@ -11,11 +12,10 @@ export class util {
 
     for (let i = 0; i < discords.length; i++) {
       const discord = discords[i];
-      if (message.indexOf(discord.Name + " : ") !== -1) {
+      if (message.indexOf(discord.name + " : ") !== -1) {
         return true;
       }
     }
-
     return false;
   }
 }
