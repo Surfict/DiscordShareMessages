@@ -10,17 +10,29 @@ moment().format();
 
 //TODO Follow message on channel that we are interested by, not all of them
 
+/**************Checks ************************/
+let conf: configStruct = config;
+
+
 // Bots initialisation
-const discordBot = new Discord.Client;
-const telegramBot = new TelegramBot(config.telegramToken);
+//Discord
+let discordBot = new Discord.Client;
+util.checkDiscordBot(discordBot);
+
+//Telegram
+const telegramBot = new TelegramBot(conf.telegramBotToken);
+util.checkTelegramBot(telegramBot);
+
+//Is the config well done ?
+util.isConfigOk(discordBot);
 
 
+/**************End Checks ************************/
+
+discordBot.login(config.discordBotToken);
 //Var init
 let dates: { [date: string]: Moment } = {};
-let configWithStruct: configStruct = config;
-let discords = configWithStruct.discords;
-
-//Is the config well ?
+let discords = conf.discords;
 
 
 //For every Discords with here activated, we add a date elemnt
@@ -30,14 +42,14 @@ discords.forEach(discord => {
     }
 });
 
-// Connexion
-discordBot.login(config.discordToken);
+
 
 //For every message on the discord
+
 discordBot.on('message', (message: Message) => {
 
     //For every Discords
-    let discords = config.discords;
+    let discords = conf.discords;
     discords.forEach(element => {
 
         if (message.channel.id === element.channelId) {
@@ -45,12 +57,12 @@ discordBot.on('message', (message: Message) => {
             //Is the message coming from the bot ?
             if (!util.isMessageAlreadyPosted(message.content)) {
 
-                telegramBot.sendMessage(config.telegramChatID, element.name + ": " + message.content);
+                telegramBot.sendMessage(conf.telegramChatID, element.name + ": " + message.content);
 
                 if (element.here) {
-                    //Is any here have already send in the last config.delayHereControl minutes ?
+                    //Is any here have already send in the last conf.delayHereControl minutes ?
                     let testDate = moment(dates[element.channelId]);
-                    if (testDate.add(config.delayHereControl, 'minutes').isBefore(moment())) {
+                    if (testDate.add(conf.delayHereControl, 'minutes').isBefore(moment())) {
 
                         //Let's check if there is no already a @here in the message
                         if (!util.isHerePresent(message.content)) {

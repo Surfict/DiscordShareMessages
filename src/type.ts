@@ -3,9 +3,9 @@ export interface discordInterface {
 }
 
 export interface configStruct {
-    discordToken: string,
+    discordBotToken: string,
     discords: discordInterface[],
-    telegramToken: string,
+    telegramBotToken: string,
     telegramChatID: string,
     delayHereControl: number
 }

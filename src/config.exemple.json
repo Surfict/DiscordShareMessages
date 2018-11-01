@@ -1,0 +1,13 @@
+{
+    "discordBotToken": "rthtrhtr",
+    "discords" : [
+        {"name" : "Discord du 14", "here": true, "neighboards" : false, "neighboards_name" : [], "channelId" : "502873033555656"},
+        {"name" : "Discord du 15", "here": true, "neighboards" : true, "neighboards_name" : ["Discord du 14"], "channelId" : "5049809565656"},
+        {"name" : "Discord du 16", "here": false, "neighboards" : true, "neighboards_name" : ["Discord du 14", "Discord du 15"], "channelId" : "504980465465464"}
+        
+    ],
+    "telegramBotToken" : "5454jgjgj",
+    "telegramChatID" : "-10054455454",
+    "delayHereControl" : 2
+
+}

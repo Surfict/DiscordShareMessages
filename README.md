@@ -10,17 +10,17 @@ For example, you can :
 - Create a collaboration system : let's say you have discord 1, 2 3 and each of this discord have a channel created for the collaboration. Each discord will receive the message from the others discord (or you can say, if you are discord 2, I want to receive the message from 1 but not from 3.)
 
 # Install
-Create at the root of the project a config.json file, based on config.exemple.json (copy paste it) and fill it with your telegram/discord bots, etc. If you don't do this, the app won't work.
+Create in the src folder a config.json file, based on config.exemple.json (copy paste it) and fill it with your telegram/discord bots, etc. If you don't do this, the app won't work.
 
 Then, go to the root folder of the project in a terminal
 - npm install
-- node index.js to launch the bot
+- npm run start
 
 
 # Configuration file
-- discordToken : The token of your discord bot
+- discordBotToken : The token of your discord bot
 - discords : The different discords that will share messages.
-- telegramToken : telegram bot token
+- telegramBotToken : telegram bot token
 - telegramChatID : Telegram group id
 - delayHereControl : if you need to have a automatic here when someome post a message, you can set the delay between two here in this option.
 
