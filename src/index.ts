@@ -28,6 +28,8 @@ util.isConfigOk(discordBot);
 /**************End Checks ************************/
 
 discordBot.login(config.discordBotToken);
+discordBot.on('error', console.error);​
+
 // Var init
 let dates: { [date: string]: Moment } = {};
 let discords = conf.discords;

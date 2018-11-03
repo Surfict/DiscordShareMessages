@@ -1,9 +1,5 @@
 import config from './../config.json';
 import { configStruct } from '../type.js';
-import { fail } from 'assert';
-import { exists } from 'fs';
-import { TextChannel } from 'discord.js';
-const TelegramBot = require('node-telegram-bot-api');
 
 export class util {
 
