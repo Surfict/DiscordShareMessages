@@ -9,7 +9,7 @@ export class Command {
 
     constructor(message: Message) {
         this.message = message;
-        this.discord = config.discords.find(discord => discord.name === this.message.guild.name);
+        this.discord = config.discords.find(discord => discord.discordId === this.message.guild.id);
     }
 
     sort() {
@@ -26,13 +26,16 @@ export class Command {
         else if (messageTab[1] === "here") {
             this.here();
         }
+        else if (messageTab[1] === "partenaires") {
+            this.all();
+        }
         else {
-            this.inconnu();
+            this.badCommand();
         }
     }
 
     help() {
-        this.message.channel.send("help : Liste des différentes commandes \ninfos : Liste les informations du bot sur ce serveur (liste des discords associés, activation du here) \ndiscords : Liste des discords associés \nhere : Etat d'activation du here")
+        this.message.channel.send("help : Liste des différentes commandes \ninfos : Liste les informations du bot sur ce serveur (liste des discords associés, activation du here) \ndiscords : Liste des discords associés \nhere : Etat d'activation du here\npartenaires : Liste de tous les discords associés au scanner des 4")
     }
 
     neighboards() {
@@ -68,13 +71,22 @@ export class Command {
 
     }
 
+    all()
+    {
+        let answer = "Liste de tous les discords associés au scanner des 4 :\n"
+        config.discords.forEach(discord => {
+            answer += discord.name + "\n"
+        })
+        this.message.channel.send(answer);
+    }
+
     resume() {
         this.neighboards();
         this.neighboardsList();
         this.here();
     }
 
-    inconnu() {
+    badCommand() {
         this.message.channel.send("Commande inconnue. Pour la liste des commandes, tappez help");
     }
 }

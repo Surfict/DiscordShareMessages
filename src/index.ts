@@ -1,10 +1,11 @@
 import Discord, { GuildChannel, Message, Channel, TextChannel } from 'discord.js';
-const TelegramBot = require('node-telegram-bot-api');
+import TelegramBot from 'node-telegram-bot-api'
 import config from './config.json';
 import { configStruct } from "./type.js";
 import moment, { Moment, now } from 'moment';
 import { util } from "./util/index.js";
 import { Command } from './commands/index.js';
+import { EventEmitter } from 'events'
 
 moment().format();
 
@@ -12,23 +13,34 @@ moment().format();
 
 /**************Checks ************************/
 let conf: configStruct = config;
+let err = new EventEmitter;
+err.on('error', value => {
+    console.error(value);
+    process.exit();
+});
 
 // Bots initialisation
 // Discord
 let discordBot = new Discord.Client;
-util.checkDiscordBot(discordBot);
+util.checkDiscordBot(discordBot).catch(e => {
+    err.emit('error', e)
+});;
 
 // Telegram
 const telegramBot = new TelegramBot(conf.telegramBotToken);
-util.checkTelegramBot(telegramBot);
+util.checkTelegramBot(telegramBot).catch(e => {
+    err.emit('error', e)
+});;
 
-// Is the config well done ?
-util.isConfigOk(discordBot);
+
+util.isConfigOk(discordBot).catch(e => {
+    err.emit('error', e)
+});
 
 /**************End Checks ************************/
 
-discordBot.login(config.discordBotToken);
-discordBot.on('error', console.error);​
+discordBot.login(config.discordBotToken)
+discordBot.on('error', console.error);
 
 // Var init
 let dates: { [date: string]: Moment } = {};
@@ -44,13 +56,12 @@ discords.forEach(discord => {
 // For every message on the discord
 discordBot.on('message', (message: Message) => {
 
-   //Command to the bot
-   if (message.content.indexOf(discordBot.user.id) !== -1)
-   {
-       const commandes = new Command(message)
-       commandes.sort()
-   }
-    // For every Discords
+    //Command to the bot
+    if (message.content.indexOf(discordBot.user.id) !== -1) {
+        const commandes = new Command(message)
+        commandes.sort()
+    }
+
     let discords = conf.discords;
     discords.forEach(element => {
 
@@ -63,12 +74,9 @@ discordBot.on('message', (message: Message) => {
                     // Is any here have already send in the last conf.delayHereControl minutes ?
                     let testDate = moment(dates[element.channelId]);
                     if (testDate.add(conf.delayHereControl, 'minutes').isBefore(moment())) {
-                        // Let's check if there is no already a @here in the message
                         if (!util.isHerePresent(message.content)) {
-                            // Send a @here on the channel
                             message.channel.send("@here : Nouveau 100 détecté !");
                         }
-                        // Let's save the date
                         dates[element.channelId] = moment();
                     }
                 }

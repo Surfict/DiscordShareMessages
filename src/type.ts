@@ -1,5 +1,5 @@
 export interface discordStruct {
-    name: string, here: boolean, neighboards: boolean,neighboards_name: string[], channelId: string
+    discordId: string, name: string, here: boolean, neighboards: boolean,neighboards_name: string[], channelId: string
 }
 
 export interface configStruct {

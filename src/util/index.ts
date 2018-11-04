@@ -1,5 +1,9 @@
 import config from './../config.json';
 import { configStruct } from '../type.js';
+import { Client } from 'discord.js';
+import { EventEmitter } from 'events'
+
+
 
 export class util {
 
@@ -8,7 +12,10 @@ export class util {
   }
 
   static isMessageAlreadyPosted(message: string): boolean {
-    if (message === "@here : Nouveau 100 détecté !") return true;
+
+    if (message === "@here : Nouveau 100 détecté !") {
+      return true;
+    }
     const discords = config.discords;
 
     for (let i = 0; i < discords.length; i++) {
@@ -20,13 +27,13 @@ export class util {
     return false;
   }
 
-  static async isConfigOk(discordBot: any){
-    
-    let conf: configStruct = config;
+  static async isConfigOk(discordBot: Client) {
+
+    const conf: configStruct = config;
     //Data consistency
-    let discordsNames : String[]  = [];
-    let discordsNeighboardsNames : String[]  = [];
-    let discordsChannels: String[] = [];
+    const discordsNames: string[] = [];
+    const discordsNeighboardsNames: string[] = [];
+    const discordsChannels: string[] = [];
     conf.discords.forEach(discord => {
       discordsNames.push(discord.name);
       discordsChannels.push(discord.channelId);
@@ -35,21 +42,27 @@ export class util {
       });
     })
 
-    if (!discordsNeighboardsNames.every(r =>  discordsNames.indexOf(r) !== -1))
-    {
-      console.error("There is no data consistency between the discords and theirs neighboards. Please check the config file.");
-      process.exit();
+
+    if (!discordsNeighboardsNames.every(r => discordsNames.indexOf(r) !== -1)) {
+      throw ("There is no data consistency between the discords and theirs neighboards. Please check the config file.")
     }
 
     // Are the channel id provided found by the bot ? (is the bot on the Discord server, and is the ID provided good ?)
     await discordBot.login(config.discordBotToken);
-    discordsChannels.forEach(channel =>  {
-      let chan = discordBot.channels.get(channel)
-        if (chan === undefined) {
-          console.error("The channel " + channel + " is not find by the discord bot. Please check your configuration file.");
-          process.exit();
-        }
+    discordsChannels.forEach(channel => {
+      const chan = discordBot.channels.get(channel)
+      if (!chan) {
+        throw ("The channel " + channel + " is not find by the discord bot. Please check your configuration file.");
+      }
     });
+
+    //Are the Discord ids provided found by the bot ? 
+    conf.discords.forEach(discord => {
+      const disc = discordBot.guilds.get(discord.discordId)
+      if (!disc) {
+        throw ("The discord " + discord.discordId + " is not find by the discord bot. Please check your configuration file.");
+      }
+    })
   }
 
   static async checkTelegramBot(telegramBot: any) {
@@ -57,8 +70,7 @@ export class util {
       await telegramBot.sendMessage(config.telegramChatID, "Le scanner des 4 vient d'être lancé :)\nNous avons actuellement " + config.discords.length + " discords en collaboration !");
     }
     catch (error) {
-      console.error("Telegram bot didn't start. Please verify your tokenBot Id or your chat id in the config file. Message error : " + error)
-      process.exit();
+      throw ("Telegram bot didn't start. Please verify your tokenBot Id or your chat id in the config file. Message error : " + error)
     }
   }
 
@@ -67,8 +79,7 @@ export class util {
       await discordBot.login(config.discordBotToken)
     }
     catch (error) {
-      console.error("Discord bot didn't start. Please verify your token in the config file. Message error : " + error)
-      process.exit();
+      throw ("Discord bot didn't start. Please verify your token in the config file. Message error : " + error)
     }
   }
 }

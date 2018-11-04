@@ -1,6 +1,6 @@
 {
   "name": "discordtotelegram",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Simple app that take messages from a Discord Server and send them to a Telegram channel/group",
   "main": "index.js",
   "scripts": {
@@ -11,13 +11,14 @@
     "type": "git",
     "url": "git+https://github.com/Surfict/DiscordToTelegram.git"
   },
-  "author": "",
+  "author": "Surfict",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Surfict/DiscordToTelegram/issues"
   },
   "homepage": "https://github.com/Surfict/DiscordToTelegram#readme",
   "dependencies": {
+    "@types/node-telegram-bot-api": "^0.30.3",
     "discord.js": "^11.4.2",
     "moment": "^2.22.2",
     "node-telegram-bot-api": "^0.30.0"
