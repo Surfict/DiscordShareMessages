@@ -2,6 +2,7 @@
     "discordBotToken": "rthtrhtr",
     "discords": [
         {
+            "discordId": "5028728577",
             "name": "Discord du 14",
             "here": true,
             "neighboards": false,
@@ -9,6 +10,7 @@
             "channelId": "502873033555656"
         },
         {
+            "discordId": "50287285777",
             "name": "Discord du 1",
             "here": true,
             "neighboards": true,
@@ -18,6 +20,7 @@
             "channelId": "5049809565656"
         },
         {
+            "discordId": "5028728",
             "name": "Discord du 16",
             "here": false,
             "neighboards": true,
