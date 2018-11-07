@@ -2,6 +2,7 @@ import config from './../config.json';
 import { configStruct } from '../type.js';
 import { Client } from 'discord.js';
 import { EventEmitter } from 'events'
+import i18next = require("i18next");
 
 
 
@@ -12,8 +13,7 @@ export class util {
   }
 
   static isMessageAlreadyPosted(message: string): boolean {
-
-    if (message === "@here : Nouveau 100 détecté !") {
+    if (message === i18next.t("fromBot.nouveau100") || message === i18next.t("fromBot.rappel") || message === i18next.t("fromBot.help") || message === i18next.t("fromBot.commandeIntrouvable")) {
       return true;
     }
     const discords = config.discords;
@@ -56,7 +56,7 @@ export class util {
       }
     });
 
-    //Are the Discord ids provided found by the bot ? 
+    //Are the Discord ids provided found by the bot ?
     conf.discords.forEach(discord => {
       const disc = discordBot.guilds.get(discord.discordId)
       if (!disc) {

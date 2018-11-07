@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import config from './../config.json';
 import { discordStruct } from "../type.js";
+import i18next from "i18next";
 
 export class Command {
 
@@ -14,20 +15,24 @@ export class Command {
 
     sort() {
         let messageTab = this.message.content.replace(/\s\s+/g, ' ').split(' ');
-        if (messageTab[1] === "help") {
+        if (messageTab[1] === "!help") {
             this.help();
         }
-        else if (messageTab[1] === "infos") {
+        else if (messageTab[1] === "!infos") {
             this.resume();
         }
-        else if (messageTab[1] === "discords") {
+        else if (messageTab[1] === "!discords") {
             this.neighboardsList();
         }
-        else if (messageTab[1] === "here") {
+        else if (messageTab[1] === "!here") {
             this.here();
         }
-        else if (messageTab[1] === "partenaires") {
+        else if (messageTab[1] === "!partenaires") {
             this.all();
+        }
+        else if (messageTab[1] === "!rappel")
+        {
+            this.rappel();
         }
         else {
             this.badCommand();
@@ -35,7 +40,7 @@ export class Command {
     }
 
     help() {
-        this.message.channel.send("help : Liste des différentes commandes \ninfos : Liste les informations du bot sur ce serveur (liste des discords associés, activation du here) \ndiscords : Liste des discords associés \nhere : Etat d'activation du here\npartenaires : Liste de tous les discords associés au scanner des 4")
+        this.message.channel.send(i18next.t("fromBot.help"))
     }
 
     neighboards() {
@@ -57,6 +62,11 @@ export class Command {
                 this.message.channel.send("Aucun discord associé.");
             }
         }
+    }
+
+    rappel()
+    {
+        this.message.channel.send(i18next.t("fromBot.rappel"))
     }
 
     here() {
@@ -87,6 +97,6 @@ export class Command {
     }
 
     badCommand() {
-        this.message.channel.send("Commande inconnue. Pour la liste des commandes, tappez help");
+        this.message.channel.send(i18next.t("fromBot.commandeIntrouvable"));
     }
 }

@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/Surfict/DiscordToTelegram#readme",
   "dependencies": {
+    "@types/i18next": "^11.9.3",
     "@types/node-telegram-bot-api": "^0.30.3",
     "discord.js": "^11.4.2",
+    "i18next": "^12.0.0",
     "moment": "^2.22.2",
     "node-telegram-bot-api": "^0.30.0"
   },
