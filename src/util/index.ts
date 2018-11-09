@@ -1,8 +1,9 @@
 import config from './../config.json';
 import { configStruct } from '../type.js';
-import { Client } from 'discord.js';
-import { EventEmitter } from 'events'
+import { Client, Message} from 'discord.js';
+
 import i18next = require("i18next");
+
 
 
 
@@ -25,6 +26,17 @@ export class util {
       }
     }
     return false;
+  }
+
+  static imagesToArray(message: Message) : string[]
+  {
+    let files : string[] = [];
+    if (message.attachments.size > 0) {
+      message.attachments.forEach(attach => {
+        files.push(attach.url);
+      });
+    }
+    return files;
   }
 
   static async isConfigOk(discordBot: Client) {

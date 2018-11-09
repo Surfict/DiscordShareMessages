@@ -1,9 +1,4 @@
-import Discord, {
-  GuildChannel,
-  Message,
-  Channel,
-  TextChannel
-} from "discord.js";
+import Discord, { Message, TextChannel } from "discord.js";
 import TelegramBot from "node-telegram-bot-api";
 import config from "./config.json";
 import { configStruct } from "./type.js";
@@ -79,6 +74,7 @@ discordBot.on("message", (message: Message) => {
     commandes.sort();
   } else {
     let discords = conf.discords;
+    let files = util.imagesToArray(message);
     discords.forEach(element => {
       if (message.channel.id === element.channelId) {
         // Is the message coming from the bot ?
@@ -93,6 +89,12 @@ discordBot.on("message", (message: Message) => {
               " : " +
               message.content
           );
+
+          if (files.length) {
+            files.forEach(file => {
+              telegramBot.sendPhoto(conf.telegramChatID, file);
+            });
+          }
 
           if (element.here) {
             // Is any here have already send in the last conf.delayHereControl minutes ?
@@ -117,12 +119,6 @@ discordBot.on("message", (message: Message) => {
                     discord.channelId
                   )! as TextChannel;
                   if (channel !== undefined) {
-                    let files: string[] = [];
-                    if (message.attachments.size > 0) {
-                      message.attachments.forEach(attach => {
-                        files.push(attach.url);
-                      });
-                    }
                     channel.send(
                       element.name +
                         ", " +
