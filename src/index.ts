@@ -117,6 +117,12 @@ discordBot.on("message", (message: Message) => {
                     discord.channelId
                   )! as TextChannel;
                   if (channel !== undefined) {
+                    let files: string[] = [];
+                    if (message.attachments.size > 0) {
+                      message.attachments.forEach(attach => {
+                        files.push(attach.url);
+                      });
+                    }
                     channel.send(
                       element.name +
                         ", " +
@@ -124,7 +130,8 @@ discordBot.on("message", (message: Message) => {
                         " à " +
                         moment().format("h:mm") +
                         " : " +
-                        message.content
+                        message.content,
+                      { files: files }
                     );
                   }
                 }
