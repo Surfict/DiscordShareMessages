@@ -34,6 +34,11 @@ export class Command {
         {
             this.rappel();
         }
+        //That commmand ask to the bot to not forward the message to others discords, so there is just nothing to do.
+        else if (messageTab[1] === "!nofollow")
+        {
+
+        }
         else {
             this.badCommand();
         }
