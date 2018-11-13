@@ -1,7 +1,7 @@
 import Discord, { Message, TextChannel } from "discord.js";
 import TelegramBot from "node-telegram-bot-api";
 import config from "./config.json";
-import { configStruct } from "./type.js";
+import { configStruct, discordStruct } from "./type.js";
 import moment, { Moment, now } from "moment";
 import { util } from "./util/index.js";
 import { Command } from "./commands/index.js";
@@ -61,10 +61,29 @@ let discords = conf.discords;
 
 // For every Discords with here activated, we add a date elemnt
 discords.forEach(discord => {
-  if (discord.here) {
+  if (discord.here.own || discord.here.everyTime) {
     dates[discord.channelId] = moment().subtract(7, "days");
   }
 });
+
+function sendHere(
+  element: discordStruct,
+  message: Message,
+  channel?: TextChannel
+) {
+  // Is any here have already send in the last conf.delayHereControl minutes ?
+  let testDate = moment(dates[element.channelId]);
+  if (testDate.add(conf.delayHereControl, "minutes").isBefore(moment())) {
+    if (!util.isHerePresent(message.content)) {
+      if (channel) {
+        channel.send("@here : Nouveau 100 détecté !");
+      } else {
+        message.channel.send("@here : Nouveau 100 détecté !");
+      }
+    }
+    dates[element.channelId] = moment();
+  }
+}
 
 // For every message on the discord
 discordBot.on("message", (message: Message) => {
@@ -96,17 +115,8 @@ discordBot.on("message", (message: Message) => {
             });
           }
 
-          if (element.here) {
-            // Is any here have already send in the last conf.delayHereControl minutes ?
-            let testDate = moment(dates[element.channelId]);
-            if (
-              testDate.add(conf.delayHereControl, "minutes").isBefore(moment())
-            ) {
-              if (!util.isHerePresent(message.content)) {
-                message.channel.send("@here : Nouveau 100 détecté !");
-              }
-              dates[element.channelId] = moment();
-            }
+          if (element.here.own) {
+            sendHere(element, message);
           }
 
           // We are going to sent this message to all the neighbords that have asked for it.
@@ -119,6 +129,9 @@ discordBot.on("message", (message: Message) => {
                     discord.channelId
                   )! as TextChannel;
                   if (channel !== undefined) {
+                    if (discord.here.everyTime) {
+                      sendHere(discord, message, channel);
+                    }
                     channel.send(
                       element.name +
                         ", " +

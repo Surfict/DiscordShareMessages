@@ -4,7 +4,10 @@
         {
             "discordId": "5028728577",
             "name": "Discord du 14",
-            "here": true,
+            "here": {
+                "own": true,
+                "everyTime": true
+              },
             "neighboards": false,
             "neighboards_name": [],
             "channelId": "502873033555656"
@@ -12,7 +15,10 @@
         {
             "discordId": "50287285777",
             "name": "Discord du 1",
-            "here": true,
+            "here": {
+                "own": true,
+                "everyTime": true
+              },
             "neighboards": true,
             "neighboards_name": [
                 "Discord du 14"
@@ -22,7 +28,10 @@
         {
             "discordId": "5028728",
             "name": "Discord du 16",
-            "here": false,
+            "here": {
+                "own": true,
+                "everyTime": true
+              },
             "neighboards": true,
             "neighboards_name": [
                 "Discord du 14",
