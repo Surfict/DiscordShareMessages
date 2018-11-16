@@ -1,6 +1,7 @@
 import config from "./../config.json";
-import { configStruct } from "../type.js";
+import { configStruct } from "../types/type.js";
 import { Client, Message } from "discord.js";
+import { configEnum } from "../types/enum.js";
 
 export class Util {
   static isHerePresent(message: string): boolean {
@@ -90,5 +91,20 @@ export class Util {
     } else {
       return 1;
     }
+  }
+
+  static updateConfig(newValue: string, configType: configEnum)
+  {
+    switch (configType)
+    {
+      case configEnum.hereOwn :
+      case configEnum.hereGlobal :
+      case configEnum.neighboardActivation :
+      case configEnum.neighboardListAdd :
+      case configEnum.neighboardListRemove :
+      case configEnum.hereChannelIdUpdate :
+
+    }
+
   }
 }

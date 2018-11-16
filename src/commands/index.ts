@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import i18next from "i18next";
-import { discordStruct } from "../type.js";
-import config from "./../../config.json";
+import { discordStruct } from "../types/type.js";
+import config from "./../config.json";
 import { Util } from "../util/index.js";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -114,10 +114,12 @@ export class Command {
   {
     const messageTab = this.message.content.replace(/\s\s+/g, " ").split(" ");
     config.delayHereControl = +messageTab[1];
-    console.log(path.join(__dirname,"../../config.json"));
-    fs.writeFile(path.join(__dirname,"../../config.json"), config, (error) => {
+    fs.writeFile(path.join(__dirname,"../../src/config.json"), JSON.stringify(config), (error) => {
       console.log(error);
   })
+  fs.writeFile(path.join(__dirname,"../config.json"), JSON.stringify(config), (error) => {
+    console.log(error);
+})
 
   console.log("after" + config.delayHereControl);
 

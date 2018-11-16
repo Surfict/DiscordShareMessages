@@ -2,6 +2,7 @@
     "discordBotToken": "rthtrhtr",
     "discords": [
         {
+            "adminsIds" : [""],
             "discordId": "5028728577",
             "name": "Discord du 14",
             "here": {
@@ -13,6 +14,7 @@
             "channelId": "502873033555656"
         },
         {
+            "adminsIds" : [""],
             "discordId": "50287285777",
             "name": "Discord du 1",
             "here": {
@@ -26,6 +28,7 @@
             "channelId": "5049809565656"
         },
         {
+            "adminsIds" : [""],
             "discordId": "5028728",
             "name": "Discord du 16",
             "here": {

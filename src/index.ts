@@ -1,7 +1,7 @@
 import Discord, { Message, TextChannel, DMChannel } from "discord.js";
 import TelegramBot from "node-telegram-bot-api";
-import config from "./../config.json";
-import { configStruct, discordStruct } from "./type.js";
+import config from "./config.json";
+import { ConfigStruct, DiscordStruct } from "./types/type.js";
 import moment, { Moment, now } from "moment";
 import { Util } from "./util/index.js";
 import { Command } from "./commands/index.js";
@@ -26,7 +26,7 @@ moment().format();
 // TODO Follow message on channel that we are interested by, not all of them
 
 /**************Checks ************************/
-let conf: configStruct = config;
+let conf: ConfigStruct = config;
 let err = new EventEmitter();
 err.on("error", value => {
   console.error(value);
@@ -67,7 +67,7 @@ discords.forEach(discord => {
 });
 
 function sendHere(
-  element: discordStruct,
+  element: DiscordStruct,
   message: Message,
   channel?: TextChannel
 ) {
