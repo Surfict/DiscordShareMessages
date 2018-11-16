@@ -1,9 +1,9 @@
-import Discord, { Message, TextChannel } from "discord.js";
+import Discord, { Message, TextChannel, DMChannel } from "discord.js";
 import TelegramBot from "node-telegram-bot-api";
-import config from "./config.json";
+import config from "./../config.json";
 import { configStruct, discordStruct } from "./type.js";
 import moment, { Moment, now } from "moment";
-import { util } from "./util/index.js";
+import { Util } from "./util/index.js";
 import { Command } from "./commands/index.js";
 import { EventEmitter } from "events";
 import i18next from "i18next";
@@ -36,17 +36,17 @@ err.on("error", value => {
 // Bots initialisation
 // Discord
 let discordBot = new Discord.Client();
-util.checkDiscordBot(discordBot).catch(e => {
+Util.checkDiscordBot(discordBot).catch(e => {
   err.emit("error", e);
 });
 
 // Telegram
 const telegramBot = new TelegramBot(conf.telegramBotToken);
-util.checkTelegramBot(telegramBot).catch(e => {
+Util.checkTelegramBot(telegramBot).catch(e => {
   err.emit("error", e);
 });
 
-util.isConfigOk(discordBot).catch(e => {
+Util.isConfigOk(discordBot).catch(e => {
   err.emit("error", e);
 });
 
@@ -74,7 +74,7 @@ function sendHere(
   // Is any here have already send in the last conf.delayHereControl minutes ?
   let testDate = moment(dates[element.channelId]);
   if (testDate.add(conf.delayHereControl, "minutes").isBefore(moment())) {
-    if (!util.isHerePresent(message.content)) {
+    if (!Util.isHerePresent(message.content)) {
       if (channel) {
         channel.send("@here : Nouveau 100 détecté !");
       } else {
@@ -87,68 +87,75 @@ function sendHere(
 
 // For every message on the discord
 discordBot.on("message", (message: Message) => {
-  //Command to the bot
-  if (message.content.indexOf(discordBot.user.id) !== -1) {
-    const commandes = new Command(message);
-    commandes.sort();
-  } else {
-    let discords = conf.discords;
-    let files = util.imagesToArray(message);
-    discords.forEach(element => {
-      if (message.channel.id === element.channelId) {
-        // Is the message coming from the bot ?
-        if (!util.isMessageAlreadyPosted(message.content)) {
-          telegramBot.sendMessage(
-            conf.telegramChatID,
-            element.name +
-              ", " +
-              message.author.username +
-              " à " +
-              moment().format("h:mm") +
-              " : " +
-              message.content
-          );
+  if (!Util.isFromTheBot(message.author.id, discordBot.user.id)) {
+    //If the message is private
+    if (message.channel instanceof DMChannel) {
+      const commandes = new Command(message);
+      commandes.sort("pm");
+    } else {
+      //Command to the bot
+      if (message.content.indexOf(discordBot.user.id) !== -1) {
+        const commandes = new Command(message);
+        commandes.sort("channel");
+      } else {
+        let discords = conf.discords;
+        let files = Util.imagesToArray(message);
+        discords.forEach(element => {
+          if (message.channel.id === element.channelId) {
+            // Is the message coming from the bot ?
 
-          if (files.length) {
-            files.forEach(file => {
-              telegramBot.sendPhoto(conf.telegramChatID, file);
-            });
-          }
+            telegramBot.sendMessage(
+              conf.telegramChatID,
+              element.name +
+                ", " +
+                message.author.username +
+                " à " +
+                moment().format("h:mm") +
+                " : " +
+                message.content
+            );
 
-          if (element.here.own) {
-            sendHere(element, message);
-          }
-
-          // We are going to sent this message to all the neighbords that have asked for it.
-          discords.forEach(discord => {
-            if (discord.neighboards) {
-              let neighbords = discord.neighboards_name;
-              neighbords.forEach(neihboard => {
-                if (neihboard === element.name) {
-                  const channel = discordBot.channels.get(
-                    discord.channelId
-                  )! as TextChannel;
-                  if (channel !== undefined) {
-                    if (discord.here.everyTime) {
-                      sendHere(discord, message, channel);
-                    }
-                    channel.send(
-                      element.name +
-                        ", " +
-                        message.author.username +
-                        " à " +
-                        moment().format("h:mm") +
-                        " : " +
-                        message.content,
-                      { files: files }
-                    );
-                  }
-                }
+            if (files.length) {
+              files.forEach(file => {
+                telegramBot.sendPhoto(conf.telegramChatID, file);
               });
             }
-          });
-        }
+
+            if (element.here.own) {
+              sendHere(element, message);
+            }
+
+            // We are going to sent this message to all the neighbords that have asked for it.
+            discords.forEach(discord => {
+              if (discord.neighboards) {
+                let neighbords = discord.neighboards_name;
+                neighbords.forEach(neihboard => {
+                  if (neihboard === element.name) {
+                    const channel = discordBot.channels.get(
+                      discord.channelId
+                    )! as TextChannel;
+                    if (channel !== undefined) {
+                      if (discord.here.everyTime) {
+                        sendHere(discord, message, channel);
+                      }
+                      channel.send(
+                        element.name +
+                          ", " +
+                          message.author.username +
+                          " à " +
+                          moment().format("h:mm") +
+                          " : " +
+                          message.content,
+                        { files: files }
+                      );
+                    }
+                  }
+                });
+              }
+            });
+          }
+        });
       }
-    });
+    }
   }
 });

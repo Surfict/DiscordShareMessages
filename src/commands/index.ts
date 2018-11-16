@@ -1,36 +1,43 @@
 import { Message } from "discord.js";
 import i18next from "i18next";
 import { discordStruct } from "../type.js";
-import config from "./../config.json";
-
+import config from "./../../config.json";
+import { Util } from "../util/index.js";
+import * as fs from 'fs';
+import * as path from 'path';
 export class Command {
   message: Message;
   discord: discordStruct | undefined;
 
   constructor(message: Message) {
     this.message = message;
-    this.discord = config.discords.find(
-      discord => discord.discordId === this.message.guild.id
-    );
+    this.discord = undefined // config.discords.find( discord => discord.discordId === this.message.guild.id);
   }
 
-  sort() {
+  sort(from: string) {
     const messageTab = this.message.content.replace(/\s\s+/g, " ").split(" ");
-    if (messageTab[1] === "!help") {
+    const tabbMessagePlace = Util.stringForPmOrChannel(from);
+    if (messageTab[tabbMessagePlace] === "!help") {
       this.help();
-    } else if (messageTab[1] === "!infos") {
+    } else if (messageTab[tabbMessagePlace] === "!infos") {
       this.resume();
-    } else if (messageTab[1] === "!discords") {
+    } else if (messageTab[tabbMessagePlace] === "!discords") {
       this.neighboardsList();
-    } else if (messageTab[1] === "!here") {
+    } else if (messageTab[tabbMessagePlace] === "!here") {
       this.here();
-    } else if (messageTab[1] === "!partenaires") {
+    } else if (messageTab[tabbMessagePlace] === "!partenaires") {
       this.all();
-    } else if (messageTab[1] === "!rappel") {
+    }
+   else if (messageTab[tabbMessagePlace] === "!test") {
+    this.test();
+  }
+  else if (messageTab[tabbMessagePlace] === "!test2") {
+    this.test2();
+  } else if (messageTab[tabbMessagePlace] === "!rappel") {
       this.rappel();
     }
     //That commmand ask to the bot to not forward the message to others discords, so there is just nothing to do.
-    else if (messageTab[1] === "!nofollow") {
+    else if (messageTab[1] === "!nofollow" || messageTab[1] === "!n") {
     } else {
       this.badCommand();
     }
@@ -96,5 +103,45 @@ export class Command {
 
   badCommand() {
     this.message.channel.send(i18next.t("fromBot.commandeIntrouvable"));
+  }
+
+
+  test2()
+  {
+    console.log(config.delayHereControl)
+  }
+   test()
+  {
+    const messageTab = this.message.content.replace(/\s\s+/g, " ").split(" ");
+    config.delayHereControl = +messageTab[1];
+    console.log(path.join(__dirname,"../../config.json"));
+    fs.writeFile(path.join(__dirname,"../../config.json"), config, (error) => {
+      console.log(error);
+  })
+
+  console.log("after" + config.delayHereControl);
+
+
+    //Arg valides ?
+    if (this.message.content[1] === "recevoir")
+    {
+      if (this.message.content[1] === "true")
+      {
+        config.delayHereControl = 3;
+      }
+      else if (this.message.content[1] === "false")
+      {
+
+      }
+
+      else{
+        this.message.channel.send("Parametres incorrects")
+      }
+    }
+
+
+
+
+
   }
 }
