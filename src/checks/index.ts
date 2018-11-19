@@ -17,6 +17,9 @@ export class Checks {
   }
 
   checkAllUpdateCommands(newValue: string, configType: configEnum) {
+    if (!this.authenticate) {
+      return false;
+    }
     this.newValue = newValue;
     switch (configType) {
       case configEnum.hereOwn:

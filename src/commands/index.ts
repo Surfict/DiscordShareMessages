@@ -18,7 +18,7 @@ export class Command {
     this.message = message;
     this.discord = undefined; // config.discords.find( discord => discord.discordId === this.message.guild.id);
     this.checks = new Checks(message, botClient);
-    this.updateConfig = new UpdateConfig(message, botClient)
+    this.updateConfig = new UpdateConfig(message, botClient);
   }
 
   sort(from: typeMessageEnum) {
@@ -42,12 +42,13 @@ export class Command {
       this.rappel();
     } else if (messageTab[1] === "!nofollow" || messageTab[1] === "!n") {
     } else if (messageTab[tabbMessagePlace] === "!hereLocalActivé") {
-     if ( this.checks.checkAllUpdateCommands(
-        messageTab[tabbMessagePlace + 1],
-        configEnum.hereOwn
-      ))
-      {
-
+      if (
+        this.checks.checkAllUpdateCommands(
+          messageTab[tabbMessagePlace + 1],
+          configEnum.hereOwn
+        )
+      ) {
+        this.updateConfig.hereLocal();
       }
     } else if (messageTab[tabbMessagePlace] === "!hereGlobalActivé") {
       this.checks.checkAllUpdateCommands(
