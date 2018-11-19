@@ -8,6 +8,7 @@ import { Command } from "./commands/index.js";
 import { EventEmitter } from "events";
 import i18next from "i18next";
 import { translation } from "./i18n/index.js";
+import { typeMessageEnum } from "./types/enum.js";
 
 i18next.init({
   lng: "fr_FR",
@@ -90,13 +91,13 @@ discordBot.on("message", (message: Message) => {
   if (!Util.isFromTheBot(message.author.id, discordBot.user.id)) {
     //If the message is private
     if (message.channel instanceof DMChannel) {
-      const commandes = new Command(message);
-      commandes.sort("pm");
+      const commandes = new Command(message, discordBot);
+      commandes.sort(typeMessageEnum.PM);
     } else {
       //Command to the bot
       if (message.content.indexOf(discordBot.user.id) !== -1) {
-        const commandes = new Command(message);
-        commandes.sort("channel");
+        const commandes = new Command(message, discordBot);
+        commandes.sort(typeMessageEnum.CHANNEL);
       } else {
         let discords = conf.discords;
         let files = Util.imagesToArray(message);

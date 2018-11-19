@@ -1,20 +1,27 @@
-import { Message } from "discord.js";
 import i18next from "i18next";
-import { discordStruct } from "../types/type.js";
+import { DiscordStruct } from "../types/type.js";
 import config from "./../config.json";
 import { Util } from "../util/index.js";
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
+import { typeMessageEnum, configEnum } from "../types/enum.js";
+import { Checks } from "../checks/index.js";
+import { Client, Message } from "discord.js";
+import { UpdateConfig } from "./update-config.js";
 export class Command {
   message: Message;
-  discord: discordStruct | undefined;
+  discord: DiscordStruct | undefined;
+  checks: Checks;
+  updateConfig: UpdateConfig;
 
-  constructor(message: Message) {
+  constructor(message: Message, botClient: Client) {
     this.message = message;
-    this.discord = undefined // config.discords.find( discord => discord.discordId === this.message.guild.id);
+    this.discord = undefined; // config.discords.find( discord => discord.discordId === this.message.guild.id);
+    this.checks = new Checks(message, botClient);
+    this.updateConfig = new UpdateConfig(message, botClient)
   }
 
-  sort(from: string) {
+  sort(from: typeMessageEnum) {
     const messageTab = this.message.content.replace(/\s\s+/g, " ").split(" ");
     const tabbMessagePlace = Util.stringForPmOrChannel(from);
     if (messageTab[tabbMessagePlace] === "!help") {
@@ -27,17 +34,46 @@ export class Command {
       this.here();
     } else if (messageTab[tabbMessagePlace] === "!partenaires") {
       this.all();
-    }
-   else if (messageTab[tabbMessagePlace] === "!test") {
-    this.test();
-  }
-  else if (messageTab[tabbMessagePlace] === "!test2") {
-    this.test2();
-  } else if (messageTab[tabbMessagePlace] === "!rappel") {
+    } else if (messageTab[tabbMessagePlace] === "!test") {
+      this.test();
+    } else if (messageTab[tabbMessagePlace] === "!test2") {
+      this.test2();
+    } else if (messageTab[tabbMessagePlace] === "!rappel") {
       this.rappel();
-    }
-    //That commmand ask to the bot to not forward the message to others discords, so there is just nothing to do.
-    else if (messageTab[1] === "!nofollow" || messageTab[1] === "!n") {
+    } else if (messageTab[1] === "!nofollow" || messageTab[1] === "!n") {
+    } else if (messageTab[tabbMessagePlace] === "!hereLocalActivé") {
+     if ( this.checks.checkAllUpdateCommands(
+        messageTab[tabbMessagePlace + 1],
+        configEnum.hereOwn
+      ))
+      {
+
+      }
+    } else if (messageTab[tabbMessagePlace] === "!hereGlobalActivé") {
+      this.checks.checkAllUpdateCommands(
+        messageTab[tabbMessagePlace + 1],
+        configEnum.hereGlobal
+      );
+    } else if (messageTab[tabbMessagePlace] === "!updateChannel100") {
+      this.checks.checkAllUpdateCommands(
+        messageTab[tabbMessagePlace + 1],
+        configEnum.channelIdUpdate
+      );
+    } else if (messageTab[tabbMessagePlace] === "!messagesExterieurs") {
+      this.checks.checkAllUpdateCommands(
+        messageTab[tabbMessagePlace + 1],
+        configEnum.neighboardActivation
+      );
+    } else if (messageTab[tabbMessagePlace] === "!ajouterDiscordPartenaire") {
+      this.checks.checkAllUpdateCommands(
+        this.message.content,
+        configEnum.neighboardListAdd
+      );
+    } else if (messageTab[tabbMessagePlace] === "!enleverDiscordPartenaire") {
+      this.checks.checkAllUpdateCommands(
+        this.message.content,
+        configEnum.neighboardListRemove
+      );
     } else {
       this.badCommand();
     }
@@ -105,45 +141,37 @@ export class Command {
     this.message.channel.send(i18next.t("fromBot.commandeIntrouvable"));
   }
 
-
-  test2()
-  {
-    console.log(config.delayHereControl)
+  test2() {
+    console.log(config.delayHereControl);
   }
-   test()
-  {
+  test() {
     const messageTab = this.message.content.replace(/\s\s+/g, " ").split(" ");
     config.delayHereControl = +messageTab[1];
-    fs.writeFile(path.join(__dirname,"../../src/config.json"), JSON.stringify(config), (error) => {
-      console.log(error);
-  })
-  fs.writeFile(path.join(__dirname,"../config.json"), JSON.stringify(config), (error) => {
-    console.log(error);
-})
+    fs.writeFile(
+      path.join(__dirname, "../../src/config.json"),
+      JSON.stringify(config),
+      error => {
+        console.log(error);
+      }
+    );
+    fs.writeFile(
+      path.join(__dirname, "../config.json"),
+      JSON.stringify(config),
+      error => {
+        console.log(error);
+      }
+    );
 
-  console.log("after" + config.delayHereControl);
-
+    console.log("after" + config.delayHereControl);
 
     //Arg valides ?
-    if (this.message.content[1] === "recevoir")
-    {
-      if (this.message.content[1] === "true")
-      {
+    if (this.message.content[1] === "recevoir") {
+      if (this.message.content[1] === "true") {
         config.delayHereControl = 3;
-      }
-      else if (this.message.content[1] === "false")
-      {
-
-      }
-
-      else{
-        this.message.channel.send("Parametres incorrects")
+      } else if (this.message.content[1] === "false") {
+      } else {
+        this.message.channel.send("Parametres incorrects");
       }
     }
-
-
-
-
-
   }
 }

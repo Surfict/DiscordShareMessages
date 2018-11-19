@@ -1,8 +1,13 @@
 export  enum configEnum{
     hereOwn,
     hereGlobal,
-    hereChannelIdUpdate,
+    channelIdUpdate,
     neighboardActivation,
     neighboardListAdd,
     neighboardListRemove
+}
+
+export enum typeMessageEnum{
+    PM,
+    CHANNEL
 }

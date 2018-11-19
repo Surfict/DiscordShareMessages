@@ -1,7 +1,7 @@
 import config from "./../config.json";
-import { configStruct } from "../types/type.js";
+import { ConfigStruct } from "../types/type.js";
 import { Client, Message } from "discord.js";
-import { configEnum } from "../types/enum.js";
+import { configEnum, typeMessageEnum } from "../types/enum.js";
 
 export class Util {
   static isHerePresent(message: string): boolean {
@@ -23,7 +23,7 @@ export class Util {
   }
 
   static async isConfigOk(discordBot: Client) {
-    const conf: configStruct = config;
+    const conf: ConfigStruct = config;
     //Data consistency
     const discordsNames: string[] = [];
     const discordsNeighboardsNames: string[] = [];
@@ -85,26 +85,12 @@ export class Util {
     }
   }
 
-  static stringForPmOrChannel(from: string) {
-    if (from === "pm") {
+  static stringForPmOrChannel(from: typeMessageEnum) {
+    if (from === typeMessageEnum.PM) {
       return 0;
     } else {
       return 1;
     }
   }
 
-  static updateConfig(newValue: string, configType: configEnum)
-  {
-    switch (configType)
-    {
-      case configEnum.hereOwn :
-      case configEnum.hereGlobal :
-      case configEnum.neighboardActivation :
-      case configEnum.neighboardListAdd :
-      case configEnum.neighboardListRemove :
-      case configEnum.hereChannelIdUpdate :
-
-    }
-
-  }
 }
