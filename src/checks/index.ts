@@ -17,7 +17,7 @@ export class Checks {
   }
 
   checkAllUpdateCommands(newValue: string, configType: configEnum) {
-    if (!this.authenticate) {
+    if (!this.authenticate()) {
       return false;
     }
     this.newValue = newValue;
@@ -50,7 +50,7 @@ export class Checks {
   checkHereGlobal() {
     if (this.newValue !== "true" && this.newValue !== "false") {
       this.message.channel.send(
-        "Impossible de changer le statut des Here en cas de nouveau message venant des autres discords. Paramètre incorrect. Pour rappel, la commande doit être de la forme !hereGlobalActivétrue ou !hereGlobalActivé false"
+        "Impossible de changer le statut des Here en cas de nouveau message venant des autres discords. Paramètre incorrect. Pour rappel, la commande doit être de la forme !hereGlobalActivé true ou !hereGlobalActivé false"
       );
       return false;
     }
@@ -153,7 +153,7 @@ export class Checks {
     return true;
   }
 
-  authenticate() {
+  authenticate(silent: boolean = false) {
     config.discords.forEach(discord => {
       if (
         discord.adminsIds.some(adminId => adminId === this.message.author.id)
@@ -163,9 +163,11 @@ export class Checks {
     });
 
     if (!this.discord) {
-      this.message.channel.sendMessage(
-        "Erreur d'authentification : le bot n'a pas pu vous authentifier."
-      );
+      if (!silent) {
+        this.message.channel.send(
+          "Erreur d'authentification : le bot n'a pas pu vous authentifier."
+        );
+      }
       return false;
     }
     return true;

@@ -91,13 +91,13 @@ discordBot.on("message", (message: Message) => {
   if (!Util.isFromTheBot(message.author.id, discordBot.user.id)) {
     //If the message is private
     if (message.channel instanceof DMChannel) {
-      const commandes = new Command(message, discordBot);
-      commandes.sort(typeMessageEnum.PM);
+      const commandes = new Command(message, discordBot, typeMessageEnum.PM);
+      commandes.sort();
     } else {
       //Command to the bot
       if (message.content.indexOf(discordBot.user.id) !== -1) {
-        const commandes = new Command(message, discordBot);
-        commandes.sort(typeMessageEnum.CHANNEL);
+        const commandes = new Command(message, discordBot, typeMessageEnum.CHANNEL);
+        commandes.sort();
       } else {
         let discords = conf.discords;
         let files = Util.imagesToArray(message);
