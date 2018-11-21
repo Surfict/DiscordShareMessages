@@ -19,15 +19,8 @@ export class Command {
     this.updateConfig = new UpdateConfig(message, botClient, this);
     if (from === typeMessageEnum.PM) {
       if (this.checks.authenticate(true)) {
-        config.discords.forEach(discord => {
-          if (
-            discord.adminsIds.some(
-              adminId => adminId === this.message.author.id
-            )
-          ) {
-            this.discord = discord;
-          }
-        });
+        this.discord = this.checks.discord;
+        this.updateConfig.setDiscord(this.checks.discord!);
       }
     } else {
       this.discord = config.discords.find(
@@ -50,6 +43,8 @@ export class Command {
       this.here();
     } else if (messageTab[tabbMessagePlace] === "!partenaires") {
       this.all();
+    } else if (messageTab[tabbMessagePlace] === "!apropos") {
+      this.personnal();
     } else if (messageTab[tabbMessagePlace] === "!rappel") {
       this.rappel();
     } else if (messageTab[1] === "!nofollow" || messageTab[1] === "!n") {
@@ -125,6 +120,8 @@ export class Command {
         "Discords associés activés : " +
           (this.discord.neighboards ? "oui" : "non")
       );
+    } else {
+      this.unauthenticated();
     }
   }
 
@@ -139,6 +136,8 @@ export class Command {
       } else {
         this.message.channel.send("Aucun discord associé.");
       }
+    } else {
+      this.unauthenticated();
     }
   }
 
@@ -159,6 +158,8 @@ export class Command {
       } else {
         this.message.channel.send("Here global : désactivé");
       }
+    } else {
+      this.unauthenticated();
     }
   }
 
@@ -171,12 +172,27 @@ export class Command {
   }
 
   resume() {
-    this.neighboards();
-    this.neighboardsList();
-    this.here();
+    if (this.discord) {
+      this.neighboards();
+      this.neighboardsList();
+      this.here();
+    } else {
+      this.unauthenticated();
+    }
+  }
+  personnal() {
+    this.message.channel.send(
+      "Bot made by Surfict - 2018. V2.0.0 Contact : a.albronn@gmail.com\n Developed with NodeJS"
+    );
   }
 
   badCommand() {
     this.message.channel.send(i18next.t("fromBot.commandeIntrouvable"));
+  }
+
+  unauthenticated() {
+    this.message.channel.send(
+      "Les commandes disponibles en privé pour les non-administrateurs du bot sont : !help, !apropros, et !partenaires"
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Client, Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel, GuildMember } from "discord.js";
 import { DiscordStruct } from "../types/type";
 import { configEnum } from "../types/enum";
 import config from "./../config.json";
@@ -154,6 +154,7 @@ export class Checks {
   }
 
   authenticate(silent: boolean = false) {
+    //Admin by id
     config.discords.forEach(discord => {
       if (
         discord.adminsIds.some(adminId => adminId === this.message.author.id)
@@ -161,6 +162,36 @@ export class Checks {
         this.discord = discord;
       }
     });
+
+    /*Admin in a group. To do this :
+    /1) We take all the users from all the guilds where the bot is present
+    /2) We take all this users and we check if one of them is the author of the message
+    /3) if yes, we check if this user (with the member attribute) have one of the admin role we have in the config file
+    */
+
+    if (!this.discord) {
+      const allUsersfromAllDiscords = this.botClient.guilds.map(
+        guild => guild.members
+      );
+
+      allUsersfromAllDiscords.forEach(guild =>
+        guild.forEach(member => {
+          if (member.user.id === this.message.author.id) {
+            member.roles.forEach(role => {
+              config.discords.forEach(discord => {
+                if (
+                  discord.adminsGroupsId.some(
+                    adminGroupId => adminGroupId === role.id
+                  )
+                ) {
+                  this.discord = discord;
+                }
+              });
+            });
+          }
+        })
+      );
+    }
 
     if (!this.discord) {
       if (!silent) {

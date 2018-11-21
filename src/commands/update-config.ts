@@ -24,6 +24,11 @@ export class UpdateConfig {
     });
   }
 
+  setDiscord(discord: DiscordStruct)
+  {
+    this.discord = discord;
+  }
+
   hereLocal() {
     const newValue = this.newValueDecompose(messageDecomposeEnum.FIRST);
     this.discord!.here.own = (newValue === "true");

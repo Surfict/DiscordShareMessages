@@ -1,6 +1,6 @@
 {
   "name": "discordtotelegram",
-  "version": "1.3.1",
+  "version": "2.0.0",
   "description": "Simple app that take messages from a Discord Server and send them to a Telegram channel/group",
   "main": "index.js",
   "scripts": {

@@ -60,6 +60,39 @@ export class Util {
           " is not find by the discord bot. Please check your configuration file.";
       }
     });
+
+    //Are the userAdminsId member of their discord ?
+    conf.discords.forEach(discord => {
+      const disc = discordBot.guilds.get(discord.discordId);
+      discord.adminsIds.forEach(adminId => {
+        let check = false;
+        if (disc!.members.some(member => member.id === adminId))
+        {
+          check = true;
+        }
+        if (!check)
+        {throw "The adminId " +
+        adminId +
+          " hasn't beeen found in his discord. Please check your configuration file.";
+      }
+      })
+    });
+    //Are the rolesIDs provided roles of theirs discord ?
+    conf.discords.forEach(discord => {
+      const disc = discordBot.guilds.get(discord.discordId);
+      discord.adminsGroupsId.forEach(adminRoleId => {
+        let check = false;
+        if (disc!.roles.some(role => role.id === adminRoleId))
+        {
+          check = true;
+        }
+        if (!check)
+        {throw "The groupId " +
+        adminRoleId +
+          " hasn't beeen found in his discord. Please check your configuration file.";
+      }
+      })
+    });
   }
 
   static async checkTelegramBot(telegramBot: any) {
